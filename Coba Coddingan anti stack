@@ -27,11 +27,13 @@ int RFE;
 
 //Untuk Variable Global
 uint16_t actualVoltage = 0;
-uint8_t actualAmpere = 0;
+float actualAmpere = 0;
 
 //Nextion
 uint32_t lastNextionUpdate = 0;
+uint32_t lastNextionUpdate2 = 0;
 const uint16_t NEXTION_UPDATE_INTERVAL = 100;
+const uint16_t NEXTION_UPDATE_INTERVAL2 = 2000;
 uint8_t returnValue = 0;
 uint8_t pendingCurrent = 0;
 bool pendingApply = false;
@@ -123,6 +125,11 @@ void updateNextionDisplay(){
  updateStatusNextion();
  updateErrorNextion();
  updatePowerLimitNextion();
+}
+
+void updateNextionDisplay2(){
+  actualAmpere = currentVal / 10.0f;
+  sendToNextion("n_current.val=" + String((int)(actualAmpere)));
 }
 
 //Update nextion yang request current
@@ -414,10 +421,10 @@ void loop() {
  updateNextionDisplay();  
  }
 
-//   if(millis() - lastNextionUpdate2 > NEXTION_UPDATE_INTERVAL2){
-//  lastNextionUpdate2 = millis();
-//  updateNextionDisplay2();
-//  }
+  if(millis() - lastNextionUpdate2 > NEXTION_UPDATE_INTERVAL2){
+ lastNextionUpdate2 = millis();
+ updateNextionDisplay2();
+ }
 
  if (millis () - t > 1000){
  t=millis();
