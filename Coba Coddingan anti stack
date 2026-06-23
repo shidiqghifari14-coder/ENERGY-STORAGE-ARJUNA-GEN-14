@@ -163,7 +163,7 @@ void handleNextionInput(){
 
       if(compID >= 2 && compID <= 7){
     pendingCurrent = compID - 1;
-      sendToNextion("n_current.val=" + String(pendingCurrent)); 
+        sendToNextion("n_current.val=" + String(pendingCurrent)); 
     // waitingApply = true;
     SerialBT.print("PendingCurrent: ");
     SerialBT.println(pendingCurrent);
@@ -184,49 +184,28 @@ void handleNextionInput(){
       SerialBT.print(">> Nextion req current: ");
       SerialBT.println(reqVal);
 
-// //Opsi bisa tapi gabisa ganti n_Current======
-//       if(reqVal >= 1 && reqVal <= 6){
-//         currentVal = reqVal * 10;
-//         cased = 0;
-//         stopCharg = 0;
-//         x = 0x0F;
-//         y = 0xA0;
-
-//        if(powerLimitActive){
-//         autoLimitCurrent();
-//        }
-// //=======
-
-       if(reqVal >=1 && reqVal <= 6 && powerLimitActive == true){
-        currentVal = reqVal *10;
+      if(reqVal >= 1 && reqVal <= 6){
+        currentVal = reqVal * 10;
         cased = 0;
         stopCharg = 0;
         x = 0x0F;
         y = 0xA0;
+
+       if(powerLimitActive == true) {
         autoLimitCurrent();
         sendToNextion("n_current.val=" + String(reqVal));
-        SerialBT.print(">> APPLIED (PL ON): ");
+        SerialBT.print(">> APPLIED: ");
         SerialBT.print(reqVal);
         SerialBT.println(" A");
         updateStatusNextion();
        }
-       else if(reqVal >=1 && reqVal <= 6 && powerLimitActive == false){
-        currentVal = reqVal*10;
-        cased = 0;
-        stopCharg = 0;
-        x = 0x0F;
-        y = 0xA0;
+       else if(powerLimitActive == false){
         sendToNextion("n_current.val=" + String(reqVal));
-        SerialBT.print(">> APPLIED (PL OFF): ");
+        SerialBT.print(">> APPLIED: ");
         SerialBT.print(reqVal);
         SerialBT.println(" A");
-        updateStatusNextion();
+        updateStatusNextion(); 
        }
-        // sendToNextion("n_current.val=" + String(reqVal));
-        // SerialBT.print(">> APPLIED: ");
-        // SerialBT.print(reqVal);
-        // SerialBT.println(" A");
-        // updateStatusNextion();
       } else {
         SerialBT.println(">>> ERROR: Invalid current value!");
       }
@@ -305,7 +284,7 @@ void decodeErrorFlags(){
  SerialBT.println();
 }
 
-// Limit Power 1360W
+// Limit Power 1370W
 void autoLimitCurrent() {
   float actualVoltageP = mergeV / 10.0f;
   if (!mergeVValid || cased == 7 || stopCharg != 0) return;
